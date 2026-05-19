@@ -1,0 +1,53 @@
+# compiled objects
+*.o
+*.so
+*.d
+*.pcm
+*.root
+
+# build dirs
+build/
+Build/
+cmake-build-*/
+obj/
+
+# CMSSW
+*.pyc
+*.pyo
+__pycache__/
+*.root
+*.log
+*.dat
+*.edm
+
+# editors
+.vscode/
+.idea/
+*~
+
+# system
+.DS_Store
+
+# git
+.git/
+
+logs/
+*.log
+*.err
+*.out
+*.pdf
+step*.py
+*.txt
+*.ipynb
+*.png
+*.jpg
+*.aux
+*.bak0
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+cmdLog
+backup

@@ -1,0 +1,31 @@
+# Parameters (need absolute paths)
+ConfigPath = /grid_mnt/data_cms_upgrade/song/HGCAL/HGCHadron
+CmsswBasePath = /grid_mnt/data_cms_upgrade/song/HGCAL/CMSSW_16_0_0_pre4
+
+executable = $(ConfigPath)/condor.sh
+transfer_input_files = $(ConfigPath)/step1.py, $(ConfigPath)/step2.py, $(ConfigPath)/step2_pu.py, $(ConfigPath)/step3.py
+environment = "INDEX=$(SampleId) CMSSW_BASE_PATH=$(CmsswBasePath) ParticleId=$(ParticleId) PU=$(PU) Scintillator=$(Scintillator)"
+
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+
+universe = vanilla
+include : mkdir -p logs |
+output = logs/$(SampleId).out
+error = logs/$(SampleId).err
+log = logs/$(SampleId).log
+transfer_output_files = ""
+
+request_memory = 20G
+request_cpus = 8
+
+T3Queue = long
+getenv = EOS_MGM_URL,EOS_HOME,X509_USER_PROXY
+WNTag=el9
++SingularityCmd = ""
+include : /opt/exp_soft/cms/t3_tst/t3queue |
+
+priority=-50
+max_retries = 1
+
+queue ParticleId, PU, Scintillator, SampleId from jobs.txt

@@ -1,0 +1,1167 @@
+\documentclass[handout]{beamer}
+\usetheme{CambridgeUS}%
+\usecolortheme{whale}
+\setbeamercolor{frametitle}{fg=blue} % 设置所有幻灯片标题为蓝色
+% \usecolortheme{dolphin}
+% \useoutertheme{smoothbars}
+% \useinnertheme{circles}
+%\usepackage{subfiles}
+%\usepackage{subfigure}
+%\usepackage{tcolorbox}
+%\usepackage{graphics,float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{changepage}
+\usepackage[absolute, overlay]{textpos}
+\usepackage{multicol}
+\setbeamerfont{frametitle}{size=\small}
+\setbeamerfont{section in toc}{series=\bfseries}
+
+\setbeamerfont{subsection in toc}{size=\footnotesize}
+\setbeamertemplate{frametitle}{
+  \nointerlineskip
+  \begin{beamercolorbox}[
+    wd=\paperwidth,
+    ht=2.2ex,
+    dp=0.9ex,
+    leftskip=0.5em
+  ]{frametitle}
+    \insertframetitle
+  \end{beamercolorbox}
+}
+\captionsetup[subfigure]{labelformat=empty}
+
+\usepackage{bm}
+% \usepackage{lipsum}
+\usepackage{mathrsfs}
+\usepackage{listings}
+\usepackage{float}
+% \usepackage{makecell}
+\usepackage{bm}
+\usepackage{indentfirst}
+\usepackage{booktabs}
+%\usepackage{ctex}
+\usepackage{tikz}
+%\usepackage[noend]{algpseudocode}
+\usepackage{enumitem}
+
+\newcommand{\era}{2022-EE}
+
+\newlist{myitemize}{itemize}{1}
+\setlist[myitemize,1]{label=\usebeamertemplate{itemize item}, leftmargin=*}
+
+% \logo{\includegraphics[height=1cm]{./cmslogo.png}}
+\setbeamertemplate{logo}{%
+  \hfill %
+  \raisebox{-0.03\textheight}[0pt][0pt]{\includegraphics[height=0.7cm]{./cmslogo.png} \includegraphics[height=0.7cm]{./llrlogo.png}} %
+}
+
+\title{HGCAL Hadronic Reconstruction}
+\author{Yuekai Song}
+\institute[LLR]
+{Laboratoire Leprince-Ringuet}
+\date{\today}
+
+\setbeamertemplate{footline}{
+  \leavevmode %
+  \hbox{%
+
+    \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor\ (\insertshortinstitute)
+    \end{beamercolorbox}%
+
+    \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}%
+
+    \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+      \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{1em} \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}%
+  } %
+  \vskip0pt %
+}
+\makeatletter
+\patchcmd{\beamer@sectionintoc}
+{\vfill}
+{\vskip\itemsep}
+{}
+{}
+\makeatother
+
+\begin{document}
+{
+  % \setbeamertemplate{headline}{}
+
+  \setbeamertemplate{logo}{%
+
+    % 左上角
+    \begin{textblock*}{2cm}(0.0cm,0.39cm) \includegraphics[height=1cm]{cmslogo.png}
+    \end{textblock*}
+    % 右上角
+    \begin{textblock*}{2cm}(11.3cm,0.39cm) \includegraphics[height=1cm]{llrlogo.png}
+\end{textblock*} } \frame{\titlepage} }
+
+\begin{frame}
+  \frametitle{Contents}
+  \hspace*{1cm}
+  \parbox[b]{0.95\textwidth}{
+    \begin{minipage}[b][0.2\textheight]{\textwidth}
+      % \begin{multicols}{2}
+      \tableofcontents
+      % \end{multicols}
+    \end{minipage}
+  }
+\end{frame}
+
+\section{Separation}
+% \subsection{Scintillator}
+
+\begin{frame}{Number of LCs}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/num_LC_dsci.pdf
+      }
+      % \begin{center}
+      %   {\small~~~~~~\textcolor{purple}{$\bullet$} Changes of $\delta_c$ in Scintillator}
+      % \end{center}
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+          \item {\footnotesize Changes of $\delta_c$ in Scintillator}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/num_LC_dsi.pdf
+      }
+      % \begin{center}
+      %   {\small~~~~~~\textcolor{purple}{$\bullet$} Changes of $\delta_c$ in Silicon}
+      % \end{center}
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=3em]
+          \item {\footnotesize Changes of $\delta_c$ in Silicon}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Scintillator, score cut at 0.1}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsci_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.1}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsci_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.1}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-3ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsci_0p1.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.1}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsci_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsci_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Scintillator, score cut at 0.2}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsci_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.2}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsci_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.2}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsci_0p2.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.2}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsci_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.2} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsci_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.2} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Scintillator, score cut at 0.4}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsci_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.4}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsci_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.4}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsci_0p4.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.4}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsci_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.4} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsci_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.4} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Scintillator, score cut at 0.6}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsci_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.6}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsci_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.6}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsci_0p6.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.6}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsci_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.6} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsci_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.6} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Scintillator, score cut at 1.0}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsci_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 1}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsci_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 1}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsci_1.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 1}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsci_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsci_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Silicon, score cut at 0.1}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsi_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.1}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsi_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.1}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsi_0p1.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.1}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsi_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsi_0p1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Silicon, score cut at 0.2}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsi_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.2}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsi_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.2}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsi_0p2.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.2}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsi_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.2} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsi_0p2.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.2} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Silicon, score cut at 0.4}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsi_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.4}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsi_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.4}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsi_0p4.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.4}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsi_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.4} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsi_0p4.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.4} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Silicon, score cut at 0.6}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsi_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 0.6}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsi_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 0.6}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsi_0p6.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 0.6}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsi_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<0.6} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsi_0p6.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<0.6} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Silicon, score cut at 1.0}
+\begin{frame}{Efficiencies}
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_LC_dsi_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{LayerClusters} for which we \textbf{can} find a CaloParticle with association score (Sim2Reco) $<$ 1}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/eff_CP_dsi_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{0.8\textwidth}
+          \begin{myitemize}[leftmargin=1em]
+            \item {\footnotesize {Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a LayerCluster with association score (Sim2Reco) $<$ 1}}
+            \end{myitemize}
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Fake Rate for LayerClusters}
+  \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+
+  \centering
+  \includegraphics[width=0.6\textwidth]{
+    /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/fr_LC_dsi_1.pdf
+  }
+  \begin{center}
+    \begin{minipage}{0.8\textwidth}
+      \begin{myitemize}[leftmargin=1em]
+        \item {\footnotesize {Fake rate: the ratio of \textbf{LayerClusters} for which we can \textbf{NOT} find a CaloParticle with association score (\textbf{Reco2Sim}) $<$ 1}}
+      \end{myitemize}
+    \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Response for Caloparticles }
+    \vspace{-4ex}
+  {\small Default separation (clusters) $\delta_c$: 1.3 (Si), 0.0315 (Sci), equals to kernel size}
+  \vspace{1ex}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\linewidth]{
+        /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_s2r_dsi_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (S2R) per CP: $\sum_{\mathrm{LC}}^{\mathrm{S2R}<1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Scintillator
+      % \end{myitemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=1.0\linewidth]{
+       /grid_mnt/data_cms_upgrade/song/HGCAL/samples/CLUE/plots/rp_r2s_dsi_1.pdf
+      }
+      \begin{center}
+        \begin{minipage}{1.0\textwidth}
+          \begin{myitemize}[leftmargin=2em]
+            \item {\footnotesize {Response (R2S) per CP: $\sum_{\mathrm{LC}}^{\mathrm{R2S}<1} E_{\mathrm{LC}}  \over E_{\mathrm{CP}}$}}
+          \end{myitemize}   
+          % {\footnotesize \textcolor{purple}{$\bullet$} Efficiency (CP): the ratio of \textbf{CaloParticles} for which we \textbf{can} find a layercluster with association score (Sim2Reco) $<$ 0.1}
+        \end{minipage}
+      \end{center}
+      % \begin{myitemize}[leftmargin=8ex]
+      % \item Changes of $\delta_c$ in Silicon
+      % \end{myitemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\end{document}

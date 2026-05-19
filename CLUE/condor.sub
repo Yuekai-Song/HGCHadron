@@ -1,0 +1,27 @@
+# Parameters (need absolute paths)
+ConfigPath = /grid_mnt/data_cms_upgrade/song/HGCAL/HGCHadron/CLUE
+CmsswBasePath = /grid_mnt/data_cms_upgrade/song/HGCAL/CMSSW_16_0_0_pre4
+
+executable = $(ConfigPath)/condor.sh
+transfer_input_files = $(ConfigPath)/$(Outdir)/step3.py
+environment = "FILE=$(File) CMSSW_BASE_PATH=$(CmsswBasePath) OUTDIR=$(ConfigPath)/$(Outdir)"
+
+universe = vanilla
+
+output = $(ConfigPath)/$(Outdir)/logs/$(ClusterId).$(ProcId).out
+error = $(ConfigPath)/$(Outdir)/logs/$(ClusterId).$(ProcId).err
+log = $(ConfigPath)/$(Outdir)/logs/$(ClusterId).log
+transfer_output_files = ""
+
+request_memory = 50G
+request_cpus = 8
+
+T3Queue = long
+getenv = EOS_MGM_URL,EOS_HOME,X509_USER_PROXY
+WNTag=el9
++SingularityCmd = ""
+include : /opt/exp_soft/cms/t3_tst/t3queue |
+
+max_retries = 1
+
+queue File, Outdir from jobs.txt
